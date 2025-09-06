@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+{% from "bootstrap5/form.html" import render_form %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do App</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container-fluid p-0">
+    <div class="row g-0">
+        <!-- ==================== Sidebar ==================== -->
+        <div class="col-md-4">
+            <div class="todo-sidebar bg-white">
+                <!-- Sidebar Header -->
+                <div class="sidebar-header p-3 bg-primary text-white">
+                    <div class="pb-1">
+                        <h5 class="mb-1 fw-bold">My Tasks</h5>
+                        <small class="text">Click on a task to view details</small>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex gap-2">
+                            <!-- Add Task Button -->
+                            <button class="btn btn-outline-light"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#formModal"
+                                    title="Add new task">
+                                <i class="bi bi-plus"></i> Add
+                            </button>
+
+                            <!-- Toggle Pending/Completed -->
+                            <a role="button" class="btn btn-outline-light"
+                               href="{{ url_for('index', completed='0' if show_completed else '1') }}">
+                                {{ "Pending" if show_completed else "Completed" }}
+                            </a>
+
+                            <!-- Sort Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown">
+                                    <i class="bi bi-funnel me-2"></i>Sort by
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="?sort=priority"><i class="bi bi-exclamation-triangle me-2"></i>Priority (High to Low)</a></li>
+                                    <li><a class="dropdown-item" href="?sort=due_date"><i class="bi bi-calendar me-2"></i>Due Date (Nearest First)</a></li>
+                                    <li><a class="dropdown-item" href="?sort=created_desc"><i class="bi bi-clock me-2"></i>Recently Created</a></li>
+                                    <li><a class="dropdown-item" href="?sort=created_asc"><i class="bi bi-clock-history me-2"></i>Oldest First</a></li>
+                                    <li><a class="dropdown-item" href="?sort=alphabetical"><i class="bi bi-sort-alpha-down me-2"></i>Alphabetical</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="?"><i class="bi bi-arrow-clockwise me-2"></i>Reset Sort</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task List -->
+                <div class="scrollable-list">
+                    <div class="list-group list-group-flush" id="todoList">
+                        <!-- Loop through tasks -->
+                        {% for task in tasks %}
+                        <div class="list-group-item todo-item priority-{{ task.priority.lower() }}"
+                             data-todo-id="{{ task.id }}"
+                             onclick="loadTodoDetail({{ task.id }})">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <!-- Task title -->
+                                    <h6 class="mb-1 fw-semibold todo-title">{{ task.title }}</h6>
+                                    <!-- Shortened description -->
+                                    <p class="mb-2 text-muted small">{{ task.description|striptags|truncate(80, True, '...') }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!-- Priority badge -->
+                                        <span class="priority-badge badge bg-{{ 'danger' if task.priority.lower() == 'high' else 'warning' if task.priority.lower() == 'medium' else 'success' }}">
+                                            {{ task.priority }}
+                                        </span>
+                                        <!-- Due date -->
+                                        <small class="text-{{ 'danger' if task.priority.lower() == 'high' else 'warning' if task.priority.lower() == 'medium' else 'success' }} fw-medium">
+                                            {{ task.complete_time.strftime("%d %B %Y") if task.complete_time else "-" }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== Main Detail Section ==================== -->
+        <div class="col-md-8">
+            <div class="todo-detail">
+                <!-- Empty state (default) -->
+                <div id="emptyState" class="empty-state">
+                    <div class="mb-4">
+                        <!-- Placeholder icon -->
+                        <svg width="64" height="64" fill="currentColor" class="text-muted" viewBox="0 0 16 16">
+                            <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                        </svg>
+                    </div>
+                    <h4>Select a task to view details</h4>
+                    <p>Choose a task from the sidebar to see its full description, due date, and options.</p>
+                </div>
+
+                <!-- Task detail view -->
+                <div id="todoDetail" style="display: none;">
+                    <!-- Task title and actions -->
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h2 id="todoTitle">Task Title</h2>
+                            <div class="d-flex gap-2 mt-2">
+                                <span id="todoPriority" class="badge bg-danger">High Priority</span>
+                                <span id="todoStatus" class="badge bg-secondary">In Progress</span>
+                            </div>
+                        </div>
+                        <!-- Actions dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="editTodo()">Edit</a></li>
+                                <li><a class="dropdown-item" href="#" id="completeButton" onclick="markComplete()">Mark Complete</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" id="deleteButton" onclick="deleteTodo()">Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Meta info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Due Date</h6>
+                            <p id="todoDueDate">January 15, 2024</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Created</h6>
+                            <p id="todoCreated">January 10, 2024</p>
+                        </div>
+                    </div>
+
+                    <!-- Task description -->
+                    <div class="mb-4">
+                        <h6 class="text-muted">Description</h6>
+                        <div id="todoDescription" class="border rounded p-3 bg-light">
+                            <p>This is where the detailed description of the task will appear.</p>
+                        </div>
+                    </div>
+
+                    <!-- Subtasks list -->
+                    <div class="mb-4">
+                        <h6 class="text-muted">Subtasks</h6>
+                        <div id="todoSubtasks">
+                            <!-- Example subtasks (will be replaced dynamically) -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="subtask1" checked>
+                                <label class="form-check-label text-decoration-line-through text-muted" for="subtask1">
+                                    Research project requirements
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="subtask2">
+                                <label class="form-check-label" for="subtask2">
+                                    Draft initial proposal
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="subtask3">
+                                <label class="form-check-label" for="subtask3">
+                                    Review with team lead
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== Add Task Modal ==================== -->
+<div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal header -->
+            <div class="modal-header bg-primary text-white">
+                <h1 class="modal-title fs-5" id="formModalLabel">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Task
+                </h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal body with form -->
+            <div class="modal-body">
+                {{ render_form(form, button_map={"submit": "primary"}) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== Scripts ==================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
