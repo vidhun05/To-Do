@@ -20,7 +20,6 @@ Easily manage tasks, subtasks, deadlines, and priorities with a clean, responsiv
 * [File Structure](#file-structure)
 * [Contributing](#contributing)
 * [Roadmap](#roadmap)
-* [System Requirements](#system-requirements)
 * [Troubleshooting](#troubleshooting)
 * [License](#license)
 * [Author](#author)
@@ -113,8 +112,7 @@ flask run
 ### Key Components
 
 * `CreateTaskForm` - Handles task creation
-* `routes.py` - Flask routes for CRUD operations
-* `todo.js` - Manages detail panel, edits, and updates
+* `script.js` - Manages detail panel, edits, and updates
 * `styles.css` - Custom sidebar and task styling
 
 ---
@@ -158,11 +156,9 @@ Contributions are welcome!
 
 ## Roadmap
 
-* [ ] User authentication
 * [ ] Search and filter tasks
 * [ ] Recurring tasks
 * [ ] Notifications & reminders
-* [ ] Multi-language support
 
 ---
 
@@ -222,5 +218,3 @@ If you encounter any problems or have questions, please:
 ---
 
 ⭐ **If you found this project helpful, give it a star!** ⭐
-
-```
