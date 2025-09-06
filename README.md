@@ -55,9 +55,10 @@ Easily manage tasks, subtasks, deadlines, and priorities with a clean, responsiv
 
 ---
 
-## Screenshots
+## Demo video
 
-*(Add your own screenshots here, e.g. sidebar + detail view)*
+https://github.com/user-attachments/assets/3f0cdb91-0e91-44b7-acd1-3e61dd243eb1
+
 
 ---
 
@@ -219,9 +220,4 @@ If you encounter any problems or have questions, please:
 
 ⭐ **If you found this project helpful, give it a star!** ⭐
 
-```
-
----
-
-Do you want me to also **write a `requirements.txt`** with the needed dependencies (`Flask`, `Flask-WTF`, `Flask-CKEditor`, etc.) so your GitHub setup is plug-and-play?
 ```
