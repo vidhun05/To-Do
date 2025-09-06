@@ -57,7 +57,10 @@ Easily manage tasks, subtasks, deadlines, and priorities with a clean, responsiv
 
 ## Demo video
 
-https://github.com/user-attachments/assets/3f0cdb91-0e91-44b7-acd1-3e61dd243eb1
+
+
+https://github.com/user-attachments/assets/7ce7c991-d9fe-44ac-9f61-6ab18fcac406
+
 
 
 ---
