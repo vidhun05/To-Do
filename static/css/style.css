@@ -1,0 +1,85 @@
+/* Sidebar containing task list */
+.todo-sidebar {
+    height: 100vh;              /* full viewport height */
+    overflow-y: auto;           /* scrollable when overflowing */
+    border-right: 1px solid #dee2e6;
+}
+
+/* Main detail view panel */
+.todo-detail {
+    height: 100vh;              
+    overflow-y: auto;           
+    padding: 2rem;
+}
+
+/* Base style for todo list items */
+.todo-item {
+    cursor: pointer;
+    transition: all 0.2s ease;  /* smooth hover/active transition */
+    border-left: 4px solid transparent;
+}
+
+/* Hover effect for todo items */
+.todo-item:hover {
+    background-color: #f8f9fa !important;
+}
+
+/* Active/selected todo item */
+.todo-item.active {
+    background-color: #e7f3ff !important;
+    border-left: 4px solid #0d6efd !important; /* bootstrap primary */
+}
+
+/* Priority indicators (left border color) */
+.priority-high {
+    border-left: 4px solid #dc3545 !important; /* bootstrap danger */
+}
+
+.priority-medium {
+    border-left: 4px solid #ffc107 !important; /* bootstrap warning */
+}
+
+.priority-low {
+    border-left: 4px solid #198754 !important; /* bootstrap success */
+}
+
+/* Shown when no task is selected */
+.empty-state {
+    text-align: center;
+    color: #6c757d;
+    margin-top: 3rem;
+}
+
+/* Sidebar header styling */
+.sidebar-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Small metadata under task titles */
+.task-meta {
+    font-size: 0.75rem;
+}
+
+/* Badge styling for priority labels */
+.priority-badge {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Restrict description height in detail view */
+.todo-description {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Scrollable list area (below header) */
+.scrollable-list {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+/* Highlight active todo title */
+.active-title {
+    color: #0d6efd;
+}
