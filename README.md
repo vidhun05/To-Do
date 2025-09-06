@@ -1,4 +1,4 @@
-# Flask To-Do App
+# To-Do App
 
 A modern, feature-rich to-do list application built with **Flask**, **WTForms**, and **Bootstrap**.  
 Easily manage tasks, subtasks, deadlines, and priorities with a clean, responsive interface.
