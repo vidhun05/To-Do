@@ -13,7 +13,7 @@ Easily manage tasks, subtasks, deadlines, and priorities with a clean, responsiv
 ## Table of Contents
 
 * [Features](#features)
-* [Screenshots](#screenshots)
+* [Demo Video](#demo-video)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Technical Details](#technical-details)
